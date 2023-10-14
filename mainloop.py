@@ -1,3 +1,7 @@
+from OpenDotaAPI import OpenDotaAPI
+from DataPreProcess import DataPreprocessing
+import time
+
 def main(sleep_time = 2):
     api = OpenDotaAPI(verbose= True)
     data = DataPreprocessing()
@@ -27,3 +31,6 @@ def _filter_function(match):
         return False
     else:
         return True
+
+if __name__ == "__main__":
+    main()

@@ -61,3 +61,4 @@ class OpenDotaAPI():
         url = "https://api.opendota.com/api/players/{}/wl".format(account_id)
         resp = self._call(url, params)
         return resp['win'], resp['lose']
+    

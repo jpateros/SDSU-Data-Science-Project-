@@ -1,3 +1,6 @@
+import pandas as pd
+import numpy as np
+
 class DataPreprocessing():
     def __init__(self):
         # Initialize tables as empty dataframes
@@ -21,7 +24,8 @@ class DataPreprocessing():
             'dire_score', 'radiant_score', 'radiant_win']
 
         proc_match = {key: [match[key]] for key in fields}
-        self.matches = self.matches.append(pd.DataFrame(proc_match), ignore_index= True)
+        self.matches = self.matches._append(pd.DataFrame(proc_match), ignore_index= True)
+        print(self.matches)
     
     def get_match_chat(self, match):
         """ Get match chat and save to self.chat dataframe. """
@@ -34,7 +38,7 @@ class DataPreprocessing():
                     message[field] = item[field]
                 messages.append(message.copy())
             if messages:
-                self.chat = self.chat.append(pd.DataFrame(messages), ignore_index= True)
+                self.chat = self.chat._append(pd.DataFrame(messages), ignore_index= True)
 
     def get_match_objectives(self, match):
         """ Get game objectives like Roshan and towers and append to self.objectives dataframe. """
@@ -50,7 +54,7 @@ class DataPreprocessing():
                         obj[field] = np.nan
                 objectives.append(obj.copy())
         if objectives:
-            self.objectives = self.objectives.append(pd.DataFrame(objectives), ignore_index= True)
+            self.objectives = self.objectives._append(pd.DataFrame(objectives), ignore_index= True)
 
     def get_match_advantages(self, match):
         """ Get radiant gold and xp advantage for each minute and append to self.advantages dataframe. """
@@ -74,7 +78,7 @@ class DataPreprocessing():
                 }
                 advantages.append(adv.copy())
         if advantages:
-            self.advantages = self.advantages.append(pd.DataFrame(advantages), ignore_index= True)
+            self.advantages = self.advantages._append(pd.DataFrame(advantages), ignore_index= True)
 
     def get_players_events(self, match):
         """ Get events for each player (kills, runes, bb and purchases) and append to self.events. """
@@ -129,7 +133,7 @@ class DataPreprocessing():
                     }
                     events.append(tmp.copy())
         if events:
-            self.events = self.events.append(pd.DataFrame(events), ignore_index= True)
+            self.events = self.events._append(pd.DataFrame(events), ignore_index= True)
 
     def get_ability_upgrades(self, match):
         """ Get skill upgrades for each player. Columns goes from 1 to 25 for each possible skill upgrade. """
@@ -148,7 +152,7 @@ class DataPreprocessing():
                     tmp['skill_upgrade_' + str(i + 1)] = value
                 ability_upgrades.append(tmp.copy())
         if ability_upgrades:
-            self.abilities = self.abilities.append(pd.DataFrame(ability_upgrades), ignore_index= True)
+            self.abilities = self.abilities._append(pd.DataFrame(ability_upgrades), ignore_index= True)
 
     def get_wards(self, match):
         """ Get time, position, slot and hero for each ward placed and append to self.wards dataframe. """
@@ -171,7 +175,7 @@ class DataPreprocessing():
                     }
                     wards.append(ward.copy())
         if wards:
-            self.wards = self.wards.append(pd.DataFrame(wards), ignore_index= True)
+            self.wards = self.wards._append(pd.DataFrame(wards), ignore_index= True)
 
     def get_players(self, match):
         """ Get match information for each player and append to self.players dataframe. """
@@ -193,7 +197,8 @@ class DataPreprocessing():
                     player[field] = np.nan
             players.append(player.copy())
         if players:
-            self.players = self.players.append(pd.DataFrame(players), ignore_index= True)
+            self.players = self.players._append(pd.DataFrame(players), ignore_index= True)
+            print(self.players)
 
     def get_previous_matches(self, current_match_id, player_account_id, player_previous_matches,
                              current_match_start_time):
@@ -213,7 +218,7 @@ class DataPreprocessing():
         df = pd.DataFrame(previous_matches)
         # Avoid future games
         df = df[df['start_time'] < current_match_start_time]
-        self.previous_matches = self.previous_matches.append(df, ignore_index= True)
+        self.previous_matches = self.previous_matches._append(df, ignore_index= True)
 
     def get_all_current_match_tables(self, match_details):
         """ Get all tables from a current match, except the previous matches. """
