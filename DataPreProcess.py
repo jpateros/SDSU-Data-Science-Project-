@@ -88,10 +88,14 @@ class DataPreprocessing():
         """get the order of heroes picked in a match"""
 
         timings = match['draft_timings']
-        # print(timings)
         timings = self.clean_draft_timings(timings)
-        
-        return timings
+        print("############### Draft Timings")
+        heroes = []
+        if timings is not None:
+            for item in timings:
+                heroes.append(item["hero_id"]) 
+        print(heroes)
+        return heroes
 
     def clean_draft_timings(self, timings):
         retval = []
@@ -114,15 +118,29 @@ class DataPreprocessing():
                     for items in purchase_log:
                         if items["time"] < 0:
                             #append to pre_game_items
-                            pre_game_items.append(items)
+                            pre_game_items.append(items["key"])
                         
                     #add new entry to items_dict
                     hero_id = player["hero_id"]
                     hero_items_dict[hero_id] = pre_game_items
                     hero_lane_dict[hero_id] = player["lane"]
-            # print(hero_items_dict)
+            print("############### Items Selected")
+            print(hero_items_dict)
+            print("############### Lane Position")
             print(hero_lane_dict)
             return hero_items_dict, hero_lane_dict
+
+    def get_teams(self, match):
+        players = match["players"]
+        team_dict = {}
+        if match is not None:
+            for player in players:
+                hero_id = player["hero_id"]
+                team_dict[hero_id] = player["isRadiant"]
+        print('############ Team dictionary')
+        print(team_dict)
+        return team_dict
+
 
     # https://liquipedia.net/dota2/MediaWiki:Dota2webapi-heroes.json
 
@@ -151,16 +169,18 @@ class DataPreprocessing():
 
     def get_all_current_match_tables(self, match_details):
         """ Get all tables from a current match, except the previous matches. """
-        self.get_match(match_details)
-        self.get_players(match_details)
-        # self.get_match_chat(match_details)
-        # self.get_match_objectives(match_details)
-        # self.get_match_advantages(match_details)
-        # self.get_ability_upgrades(match_details)
-        self.get_players_events(match_details)
-        # self.get_wards(match_details)
-        self.get_draft_timings(match_details)
-        self.get_hero_starting_items_lane(match_details)
+        if match_details is not None:
+            self.get_match(match_details)
+            self.get_players(match_details)
+            # self.get_match_chat(match_details)
+            # self.get_match_objectives(match_details)
+            # self.get_match_advantages(match_details)
+            # self.get_ability_upgrades(match_details)
+            self.get_players_events(match_details)
+            # self.get_wards(match_details)
+            self.get_draft_timings(match_details)
+            self.get_hero_starting_items_lane(match_details)
+            self.get_teams(match_details)
  
     # def get_match_chat(self, match):
     #     """ Get match chat and save to self.chat dataframe. """

@@ -11,7 +11,8 @@ def main(sleep_time = 2):
     for recent_match in recent_matches:
         time.sleep(sleep_time)
         match_details = api.get_match_info(recent_match['match_id'])
-        data.get_all_current_match_tables(match_details)
+        if match_details is not None:
+            data.get_all_current_match_tables(match_details)
         # Get previous matches for all players with valid account ids
         # players_with_account = data.players[data.players['account_id'] > 0]
         # for i, player in players_with_account.iterrows():
