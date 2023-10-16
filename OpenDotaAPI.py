@@ -24,16 +24,26 @@ class OpenDotaAPI():
                 time.sleep(5)
         else:
             ValueError("Unable to connect to OpenDota API")
-
-    # Return a list of 100 recent matches; save smaller match_id
-    def get_recent_matches(self, use_last_match = False):
+      
+    def get_recent_pro_matches(self, use_last_match = False):
         params = dict()
         if use_last_match:
             params['less_than_match_id'] = self.last_match_id
-        url = "https://api.opendota.com/api/publicMatches"
+        url = "https://api.opendota.com/api/proMatches"
         matches = self._call(url, params)
+        print(matches)
         self.last_match_id = min([item['match_id'] for item in matches])
         return matches
+
+    # # Return a list of 100 recent matches; save smaller match_id
+    # def get_recent_matches(self, use_last_match = False):
+    #     params = dict()
+    #     if use_last_match:
+    #         params['less_than_match_id'] = self.last_match_id
+    #     url = "https://api.opendota.com/api/publicMatches"
+    #     matches = self._call(url, params)
+    #     self.last_match_id = min([item['match_id'] for item in matches])
+    #     return matches
 
     # Return a dictionary with match information
     def get_match_info(self, match_id):
