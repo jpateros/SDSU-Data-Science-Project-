@@ -27,7 +27,7 @@ class DataPreprocessing():
 
         proc_match = {key: [match[key]] for key in fields}
         self.matches = self.matches._append(pd.DataFrame(proc_match), ignore_index= True)
-        print(self.matches)
+        # print(self.matches)
    
     def get_players_events(self, match):
         """ Get events for each player (kills, runes, bb and purchases) and append to self.events. """
@@ -99,13 +99,33 @@ class DataPreprocessing():
             for item in timings:
                 if item['pick'] == True:
                     retval.append(item)
-            print(retval)
+            # print(retval)
             return retval
 
-    def get_starting_items(self):
-        
-    
-    
+    def get_hero_starting_items_lane(self, match):
+        hero_items_dict = {}
+        players = match["players"]
+        hero_lane_dict = {}    
+        if match is not None:
+            for player in players:
+                purchase_log = player["purchase_log"]
+                pre_game_items = []
+                if purchase_log is not None:
+                    for items in purchase_log:
+                        if items["time"] < 0:
+                            #append to pre_game_items
+                            pre_game_items.append(items)
+                        
+                    #add new entry to items_dict
+                    hero_id = player["hero_id"]
+                    hero_items_dict[hero_id] = pre_game_items
+                    hero_lane_dict[hero_id] = player["lane"]
+            # print(hero_items_dict)
+            print(hero_lane_dict)
+            return hero_items_dict, hero_lane_dict
+
+    # https://liquipedia.net/dota2/MediaWiki:Dota2webapi-heroes.json
+
     def get_players(self, match):
         """ Get match information for each player and append to self.players dataframe. """
         
@@ -127,7 +147,7 @@ class DataPreprocessing():
             players.append(player.copy())
         if players:
             self.players = self.players._append(pd.DataFrame(players), ignore_index= True)
-            print(self.players)
+            # print(self.players)
 
     def get_all_current_match_tables(self, match_details):
         """ Get all tables from a current match, except the previous matches. """
@@ -140,6 +160,7 @@ class DataPreprocessing():
         self.get_players_events(match_details)
         # self.get_wards(match_details)
         self.get_draft_timings(match_details)
+        self.get_hero_starting_items_lane(match_details)
  
     # def get_match_chat(self, match):
     #     """ Get match chat and save to self.chat dataframe. """

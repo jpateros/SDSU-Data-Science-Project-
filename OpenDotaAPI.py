@@ -31,7 +31,6 @@ class OpenDotaAPI():
             params['less_than_match_id'] = self.last_match_id
         url = "https://api.opendota.com/api/proMatches"
         matches = self._call(url, params)
-        print(matches)
         self.last_match_id = min([item['match_id'] for item in matches])
         return matches
 

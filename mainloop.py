@@ -1,6 +1,7 @@
 from OpenDotaAPI import OpenDotaAPI
 from DataPreProcess import DataPreprocessing
 import time
+import json 
 
 def main(sleep_time = 2):
     api = OpenDotaAPI(verbose= True)
