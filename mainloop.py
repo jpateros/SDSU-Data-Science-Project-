@@ -1,7 +1,8 @@
 from OpenDotaAPI import OpenDotaAPI
-from DataPreProcess import DataPreprocessing
+from DataPreProcess2 import DataPreprocessing
 import time
 import json 
+import pandas as pd
 
 def main(sleep_time = 2):
     api = OpenDotaAPI(verbose= True)
@@ -21,6 +22,12 @@ def main(sleep_time = 2):
         #     if full_match_history:
         #         data.get_previous_matches(match_details['match_id'], player['account_id'],
         #         full_match_history, match_details['start_time'])
+        dfs = []
+        for field, df in vars(data).items():
+            if df is None:
+                return None
+            dfs.append(df)
+        combined_df = pd.concat(dfs, ignore_index=True)
     return data
 
 
