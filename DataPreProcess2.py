@@ -3,10 +3,14 @@ import pandas as pd
 class DataPreprocessing():
     def __init__(self):
         # Initialize tables as empty dataframes
-        self.items_selected = pd.DataFrame()
-        self.draft_timings = pd.DataFrame()
-        self.teams = pd.DataFrame()
-        self.lane_position = pd.DataFrame()
+        # TODO: change these to become empty dictionaries
+        # then at the end condense everything into a dataframe
+        # self.items_selected = pd.DataFrame()
+        # self.draft_timings = pd.DataFrame()
+        # self.teams = pd.DataFrame()
+        # self.lane_position = pd.DataFrame()
+        self.dict_of_dict = {}
+        self.list_of_dictionaries = []
 
     def get_hero_starting_items_lane(self, match):
         hero_items_dict = {}
@@ -32,20 +36,8 @@ class DataPreprocessing():
             hero_items_dict = {k: v + [None] * (max_length - len(v)) for k, v in hero_items_dict.items()}
             
             # Create the DataFrame
-            df = pd.DataFrame.from_dict(hero_items_dict, orient='index').fillna('')
-
-            # Reset the index
-            df.reset_index(inplace=True)
-            df.rename(columns={'index': 'hero_id'}, inplace=True)
-
-            self.items_selected = self.items_selected._append(df, ignore_index=True)
-            print("########################### ITEMS SELECTED")
-            print(self.items_selected)
-            self.items_selected.to_csv("data.csv")
             
-            self.lane_position = self.lane_position._append(pd.DataFrame(hero_lane_dict, index=[0]), ignore_index=True)
-            print('############################# LANE POSITIONS')
-            print(self.lane_position)
+            
     def get_draft_timings(self, match):
         """get the order of heroes picked in a match"""
 
@@ -56,10 +48,11 @@ class DataPreprocessing():
         if timings is not None:
             for item in timings:
                 heroes.append(item["hero_id"]) 
-        self.draft_timings = self.draft_timings._append(pd.DataFrame(heroes), ignore_index=True)
-        print(self.draft_timings)
-        # return heroes
-
+    
+        for index, id in enumerate(heroes):
+            self.dict_of_dict[id].update({"Time" : index})
+        print(self.dict_of_dict)
+        
     def clean_draft_timings(self, timings):
         retval = []
         if timings is not None:
@@ -74,14 +67,10 @@ class DataPreprocessing():
         if match is not None:
             for player in players:
                 hero_id = player["hero_id"]
-                team_dict[hero_id] = player["isRadiant"]
-        # print('############ Team dictionary')
-        # print(team_dict)
-
-        self.teams = self.teams._append(pd.DataFrame([team_dict]), ignore_index=True)
-        print('############ Team dictionary')
-        print(self.teams)
-        # return team_dict
+                team_dict[hero_id] = int(player["isRadiant"])
+        
+        self.dict_of_dict =  {key: {"Team": value} for key, value in team_dict.items()}
+        
             
     def get_all_current_match_tables(self, match_details):
             """ Get all tables from a current match, except the previous matches. """
@@ -102,4 +91,35 @@ class DataPreprocessing():
                 row 6
                 ...
                 row 10 
+                """
+
+                """
+                import pandas as pd
+
+                # Define the data for the columns
+                data = {
+                    'Column1': [1, 2, 3, 4, 5],
+                    'Column2': ['A', 'B', 'C', 'D', 'E'],
+                    'Column3': [10.1, 20.2, 30.3, 40.4, 50.5]
+                }
+                data = [
+                row 1: {"hero_id": 123, "team": True, "order": 0, "lane": 1}, etc. 
+                row 2: {"hero_id": 123, "team": True, "order": 0, "lane": 1},
+                ]
+
+                1. First insert all heros id into 10 different dictionarys
+                2. Name the dictionary by hero id
+                3. Go into the dicitonary with that hero id and insert the rest of the items
+                4. Append to the lists when done 
+
+                5. Erase old dictionaries when finishing an entire match
+                6. Loop again
+
+
+                # Create the dataframe
+                df = pd.DataFrame(data)
+
+                # Print the dataframe
+                print(df)
+
                 """
