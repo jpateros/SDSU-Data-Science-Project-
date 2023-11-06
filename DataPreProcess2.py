@@ -2,16 +2,10 @@ import pandas as pd
 
 class DataPreprocessing():
     def __init__(self):
-        # Initialize tables as empty dataframes
-        # TODO: change these to become empty dictionaries
-        # then at the end condense everything into a dataframe
-        # self.items_selected = pd.DataFrame()
-        # self.draft_timings = pd.DataFrame()
-        # self.teams = pd.DataFrame()
-        # self.lane_position = pd.DataFrame()
         self.dict_of_dict = {}
         self.list_of_dictionaries = []
-
+        self.match_id = None
+    
     def get_hero_starting_items_lane(self, match):
         hero_items_dict = {}
         players = match["players"]
@@ -35,23 +29,77 @@ class DataPreprocessing():
             # Fill missing values with None
             hero_items_dict = {k: v + [None] * (max_length - len(v)) for k, v in hero_items_dict.items()}
             
-            # Create the DataFrame
+            for key in hero_lane_dict:
+                self.dict_of_dict[key].update({"Lane" : hero_lane_dict[key]})
             
-            
+            # print(hero_items_dict)
+            for key in hero_items_dict:
+                self.dict_of_dict[key].update({
+                                            "smoke_of_deceit" : 0,
+                                            "boots" : 0,
+                                            "flask" : 0,
+                                            "blood_grenade" : 0,
+                                            "clarity" : 0,
+                                            "enchanted_mango" : 0,
+                                            "branches" : 0,
+                                            "magic_stick" : 0,
+                                            "faerie_fire" : 0,
+                                            "circlet" : 0,
+                                            "gauntlets" : 0,
+                                            "ward_observer" : 0,
+                                            "tango" : 0,
+                                            "ward_sentry" : 0,
+                                            "dust_of_appearance" : 0,
+                                            "slippers" : 0,
+                                            "quelling_blade" : 0,
+                                            "ring_of_protection" : 0,
+                                            "magic_wand" : 0,
+                                            "mantle" : 0,
+                                            "crown" : 0,
+                                            "recipe_bracer" : 0,
+                                            "recipe_magic_wand" : 0,
+                                            "chainmail" : 0,
+                                            "blight_stone" : 0,
+                                            "robe" : 0,
+                                            "belt_of_strength" : 0,
+                                            "band_of_elvenskin" : 0,
+                                            "recipe_wraith_band" : 0,
+                                            "wraith_band" : 0,
+                                            "gloves" : 0,
+                                            "infused_raindrops" : 0,
+                                            "blades_of_attack" : 0,
+                                            "orb_of_venom" : 0,
+                                            "tpscroll" : 0,
+                                            "robe_of_the_magi" : 0,
+                                            "fluffy_hat" : 0,
+                                            "ring_of_regen" : 0,
+                                            "sobi_mask" : 0,
+                                            "null_talisman" : 0,
+                                            "buckler" : 0,
+                                            "headdress" : 0,
+                                            "ring_of_basilius" : 0,
+                                            "wind_lace" : 0
+                                        })
+                if hero_items_dict[key] is not None:
+                    for index, item in enumerate(hero_items_dict[key]):
+                        if item is not None:
+                            value = self.dict_of_dict[key][item] + 1                        
+                            self.dict_of_dict[key].update({item : value})
+                
     def get_draft_timings(self, match):
         """get the order of heroes picked in a match"""
 
         timings = match['draft_timings']
         timings = self.clean_draft_timings(timings)
-        print("############### Draft Timings")
+        # print("############### Draft Timings")
         heroes = []
         if timings is not None:
             for item in timings:
                 heroes.append(item["hero_id"]) 
     
         for index, id in enumerate(heroes):
-            self.dict_of_dict[id].update({"Time" : index})
-        print(self.dict_of_dict)
+            self.dict_of_dict[id].update({"Order" : index})
+        # print(self.dict_of_dict)
         
     def clean_draft_timings(self, timings):
         retval = []
@@ -68,20 +116,38 @@ class DataPreprocessing():
             for player in players:
                 hero_id = player["hero_id"]
                 team_dict[hero_id] = int(player["isRadiant"])
-        
-        self.dict_of_dict =  {key: {"Team": value} for key, value in team_dict.items()}
+        self.dict_of_dict =  {key: {"Hero ID": key} for key, value in team_dict.items()}
+        for key in self.dict_of_dict:
+            self.dict_of_dict[key].update({"Team": team_dict[key]})
         
             
     def get_all_current_match_tables(self, match_details):
-            """ Get all tables from a current match, except the previous matches. """
-            if match_details is not None:
-                # self.get_match(match_details)
-                self.get_teams(match_details)
-                self.get_draft_timings(match_details)
-                self.get_hero_starting_items_lane(match_details)
+        """ Get all tables from a current match, except the previous matches. """
+        if match_details is not None:
+            self.match_id = match_details["match_id"]
+            # self.get_match(match_details)
+            self.get_teams(match_details)
+            self.get_draft_timings(match_details)
+            self.get_hero_starting_items_lane(match_details)
+            # print(self.dict_of_dict)
+            return self.create_data_frame()
 
+    def create_data_frame(self):
+        first_key = list(self.dict_of_dict.keys())[0]
+        first_dict = self.dict_of_dict[first_key]
 
-                """
+        df = pd.DataFrame([first_dict], index=[self.match_id])
+        # print(df)
+        i = 0
+        for key in self.dict_of_dict:
+            if i != 0:
+                df2 = pd.DataFrame(self.dict_of_dict[key], index=[self.match_id])
+                # print(df2)
+                df = pd.concat([df, df2])            
+            i = i + 1
+        return df
+        # print(df)
+"""
                         hero id | team | order | lane | item 1 | item 2| ... | item 12
                 row 1   123       true   0       1
                 row 2
@@ -93,7 +159,7 @@ class DataPreprocessing():
                 row 10 
                 """
 
-                """
+"""
                 import pandas as pd
 
                 # Define the data for the columns
