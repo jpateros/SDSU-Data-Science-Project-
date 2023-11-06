@@ -7,24 +7,24 @@ import pandas as pd
 def main(sleep_time = 2):
     api = OpenDotaAPI(verbose= True)
     data = DataPreprocessing()
-    recent_matches = filter_matches(api.get_recent_pro_matches())
+    # recent_matches = filter_matches(api.get_recent_pro_matches())
     df = pd.DataFrame()
     i = 0
-    for recent_match in recent_matches:
-        time.sleep(sleep_time)
-        match_details = api.get_match_info(recent_match['match_id'])
-        if match_details is not None:
-            table = data.get_all_current_match_tables(match_details)
-        
-        df = pd.concat([df, table])
-        if i % 10 == 0:
-            print(df)
-        i = i + 1
-        if i >= 1000:
-            break
-            
-        # Specify the file path where you want to save the CSV file
-    file_path = '1000_matches.csv'
+    for i in range(1,10):
+        recent_matches = filter_matches(api.get_recent_pro_matches())
+        for recent_match in recent_matches:
+            time.sleep(sleep_time)
+            match_details = api.get_match_info(recent_match['match_id'])
+            if match_details is not None:
+                i = i + 1
+                table = data.get_all_current_match_tables(match_details)
+                
+            if table is not None:
+                df = pd.concat([df, table])
+            if i >= 10000:
+                break
+            # Specify the file path where you want to save the CSV file
+    file_path = '1000_matches_pt2.csv'
 
     # Write the DataFrame to a CSV file
     df.to_csv(file_path, index=False)  # Set index=False if you don't want to save the DataFrame's index

@@ -5,6 +5,7 @@ class DataPreprocessing():
         self.dict_of_dict = {}
         self.list_of_dictionaries = []
         self.match_id = None
+        self.valid_df = True
     
     def get_hero_starting_items_lane(self, match):
         hero_items_dict = {}
@@ -33,6 +34,8 @@ class DataPreprocessing():
             hero_items_dict = {k: v + [None] * (max_length - len(v)) for k, v in hero_items_dict.items()}
             
             for key in hero_lane_dict:
+                if hero_lane_dict[key] == None:
+                    self.valid_df = False
                 self.dict_of_dict[key].update({"Lane" : hero_lane_dict[key]})
             
             # print(hero_items_dict)
@@ -87,7 +90,9 @@ class DataPreprocessing():
                 if hero_items_dict[key] is not None:
                     for index, item in enumerate(hero_items_dict[key]):
                         if item is not None:
-                            value = self.dict_of_dict[key][item] + 1                        
+                            value = self.dict_of_dict[key][item] + 1     
+                            if item == None:
+                                self.valid_df = False                   
                             self.dict_of_dict[key].update({item : value})
                 
     def get_draft_timings(self, match):
@@ -103,6 +108,8 @@ class DataPreprocessing():
     
         for index, id in enumerate(heroes):
             self.dict_of_dict[id].update({"Order" : index})
+            if index == None:
+                self.valid_df = False
         # print(self.dict_of_dict)
         
     def clean_draft_timings(self, timings):
@@ -149,7 +156,11 @@ class DataPreprocessing():
                 # print(df2)
                 df = pd.concat([df, df2])            
             i = i + 1
-        return df
+        if self.valid_df:
+            return df
+        else:
+            #we had some sort invalid entry we dont want to include the match at all
+            return None
         # print(df)
 """
                         hero id | team | order | lane | item 1 | item 2| ... | item 12
