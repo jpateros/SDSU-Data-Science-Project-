@@ -23,10 +23,13 @@ class DataPreprocessing():
                     hero_items_dict[hero_id] = pre_game_items
                     hero_lane_dict[hero_id] = player["lane"]
             
-            # Find the maximum length of the item lists
-            max_length = max(len(lst) for lst in hero_items_dict.values())
-            
-            # Fill missing values with None
+            max_length = 0  # Initialize max_length to 0
+
+            for lst in hero_items_dict.values():
+                if lst:  # Check if the list is not empty
+                    max_length = max(max_length, len(lst))
+
+            # Now you can fill missing values with None
             hero_items_dict = {k: v + [None] * (max_length - len(v)) for k, v in hero_items_dict.items()}
             
             for key in hero_lane_dict:
@@ -78,7 +81,8 @@ class DataPreprocessing():
                                             "buckler" : 0,
                                             "headdress" : 0,
                                             "ring_of_basilius" : 0,
-                                            "wind_lace" : 0
+                                            "wind_lace" : 0,
+                                            "boots_of_elves" : 0
                                         })
                 if hero_items_dict[key] is not None:
                     for index, item in enumerate(hero_items_dict[key]):
