@@ -11,7 +11,7 @@ def main(sleep_time = 2):
     # recent_matches = filter_matches(api.get_recent_pro_matches())
     df = pd.DataFrame()
     i = 0
-    for i in range(1,10):
+    for i in range(1,20):
         recent_matches = filter_matches(api.get_recent_pro_matches())
         for recent_match in recent_matches:
             time.sleep(sleep_time)
