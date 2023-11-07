@@ -3,6 +3,7 @@ from DataPreProcess2 import DataPreprocessing
 import time
 import json 
 import pandas as pd
+import os 
 
 def main(sleep_time = 2):
     api = OpenDotaAPI(verbose= True)
@@ -19,17 +20,17 @@ def main(sleep_time = 2):
                 i = i + 1
                 table = data.get_all_current_match_tables(match_details)
                 
-            if table is not None:
-                df = pd.concat([df, table])
-                print(df)
+            if not (table.isna().any().any()) and not(table.shape[1] < 44):
+                file_path = 'large_amounts_of_data.csv'
+                if os.path.isfile(file_path):
+                    # Append the DataFrame to the existing CSV file without overwriting
+                    table.to_csv(file_path, index=False, mode='a', header=False)  # Set header=False to avoid writing column headers
+                else:
+                    # If the file doesn't exist, create a new CSV file
+                    table.to_csv(file_path, index=False)  
+                print(table)
             if i >= 10000:
                 break
-            # Specify the file path where you want to save the CSV file
-    file_path = '1000_matches_pt2.csv'
-
-    # Write the DataFrame to a CSV file
-    df.to_csv(file_path, index=False)  # Set index=False if you don't want to save the DataFrame's index
-
 
 def filter_matches(matches_list):
     return list(filter(lambda m: _filter_function(m), matches_list))

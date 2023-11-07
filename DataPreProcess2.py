@@ -54,29 +54,22 @@ class DataPreprocessing():
                                             "gauntlets" : 0,
                                             "ward_observer" : 0,
                                             "tango" : 0,
-                                            "ward_sentry" : 0,
-                                            "dust_of_appearance" : 0,
+                                            "ward_sentry" : 0,                                            
                                             "slippers" : 0,
                                             "quelling_blade" : 0,
                                             "ring_of_protection" : 0,
                                             "magic_wand" : 0,
                                             "mantle" : 0,
                                             "crown" : 0,
-                                            "recipe_bracer" : 0,
-                                            "recipe_magic_wand" : 0,
                                             "chainmail" : 0,
                                             "blight_stone" : 0,
                                             "robe" : 0,
-                                            "belt_of_strength" : 0,
-                                            "band_of_elvenskin" : 0,
-                                            "recipe_wraith_band" : 0,
                                             "wraith_band" : 0,
                                             "gloves" : 0,
                                             "infused_raindrops" : 0,
                                             "blades_of_attack" : 0,
                                             "orb_of_venom" : 0,
                                             "tpscroll" : 0,
-                                            "robe_of_the_magi" : 0,
                                             "fluffy_hat" : 0,
                                             "ring_of_regen" : 0,
                                             "sobi_mask" : 0,
@@ -112,6 +105,8 @@ class DataPreprocessing():
             if index == None:
                 self.valid_df = False
         # print(self.dict_of_dict)
+        for key in self.dict_of_dict:
+            self.dict_of_dict[key].update({"MatchID" : self.match_id})
         
     def clean_draft_timings(self, timings):
         retval = []
