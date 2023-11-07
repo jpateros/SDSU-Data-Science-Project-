@@ -21,6 +21,7 @@ def main(sleep_time = 2):
                 
             if table is not None:
                 df = pd.concat([df, table])
+                print(df)
             if i >= 10000:
                 break
             # Specify the file path where you want to save the CSV file

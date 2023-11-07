@@ -85,7 +85,8 @@ class DataPreprocessing():
                                             "headdress" : 0,
                                             "ring_of_basilius" : 0,
                                             "wind_lace" : 0,
-                                            "boots_of_elves" : 0
+                                            "boots_of_elves" : 0,
+                                            "dust" : 0
                                         })
                 if hero_items_dict[key] is not None:
                     for index, item in enumerate(hero_items_dict[key]):
@@ -161,7 +162,7 @@ class DataPreprocessing():
         else:
             #we had some sort invalid entry we dont want to include the match at all
             return None
-        # print(df)
+        print(df)
 """
                         hero id | team | order | lane | item 1 | item 2| ... | item 12
                 row 1   123       true   0       1
