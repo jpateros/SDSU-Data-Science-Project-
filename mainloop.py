@@ -12,7 +12,7 @@ def main(sleep_time = 2):
     df = pd.read_csv('large_amounts_of_data.csv')
     i = 0
     match_df = pd.read_csv("2022_Match_IDs.csv")
-    match_ids = match_df["match_id"].tail(10000).tolist()
+    match_ids = match_df["match_id"].iloc[10001:20000]
     while True:
         
         for recent_match in match_ids:
