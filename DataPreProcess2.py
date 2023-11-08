@@ -144,7 +144,6 @@ class DataPreprocessing():
         first_dict = self.dict_of_dict[first_key]
 
         df = pd.DataFrame([first_dict], index=[self.match_id])
-        # print(df)
         i = 0
         for key in self.dict_of_dict:
             if i != 0:
@@ -157,7 +156,6 @@ class DataPreprocessing():
         else:
             #we had some sort invalid entry we dont want to include the match at all
             return None
-        print(df)
 """
                         hero id | team | order | lane | item 1 | item 2| ... | item 12
                 row 1   123       true   0       1
