@@ -131,14 +131,17 @@ class DataPreprocessing():
             
     def get_all_current_match_tables(self, match_details):
         """ Get all tables from a current match, except the previous matches. """
-        if match_details is not None:
-            self.match_id = match_details["match_id"]
-            # self.get_match(match_details)
-            self.get_teams(match_details)
-            self.get_draft_timings(match_details)
-            self.get_hero_starting_items_lane(match_details)
-            # print(self.dict_of_dict)
-            return self.create_data_frame()
+        try:
+            if match_details is not None:
+                self.match_id = match_details["match_id"]
+                # self.get_match(match_details)
+                self.get_teams(match_details)
+                self.get_draft_timings(match_details)
+                self.get_hero_starting_items_lane(match_details)
+                # print(self.dict_of_dict)
+                return self.create_data_frame()
+        except Exception as e:
+            print("we gonna keep going ayy")
 
     def create_data_frame(self):
         first_key = list(self.dict_of_dict.keys())[0]

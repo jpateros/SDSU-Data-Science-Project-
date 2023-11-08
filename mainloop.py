@@ -12,7 +12,7 @@ def main(sleep_time = 2):
     df = pd.read_csv('large_amounts_of_data.csv')
     i = 0
     match_df = pd.read_csv("2022_Match_IDs.csv")
-    match_ids = match_df["match_id"].head(10000).tolist()
+    match_ids = match_df["match_id"].tail(10000).tolist()
     while True:
         
         for recent_match in match_ids:
@@ -20,16 +20,16 @@ def main(sleep_time = 2):
 
             if match_details is not None:
                 table = data.get_all_current_match_tables(match_details)
-
-            if not (table.isna().any().any()) and not(table.shape[1] < 44) and not (recent_match in df[['MatchID']].values):
-                file_path = 'large_amounts_of_data.csv'
-                if os.path.isfile(file_path):
-                    # Append the DataFrame to the existing CSV file without overwriting
-                    table.to_csv(file_path, index=False, mode='a', header=False)  # Set header=False to avoid writing column headers
-                    print(table)
-                else:
-                    # If the file doesn't exist, create a new CSV file
-                    table.to_csv(file_path, index=False)  
+            if table is not None:
+                if not (table.isna().any().any()) and not(table.shape[1] < 44) and not (recent_match in df[['MatchID']].values):
+                    file_path = 'large_amounts_of_data.csv'
+                    if os.path.isfile(file_path):
+                        # Append the DataFrame to the existing CSV file without overwriting
+                        table.to_csv(file_path, index=False, mode='a', header=False)  # Set header=False to avoid writing column headers
+                        print(table)
+                    else:
+                        # If the file doesn't exist, create a new CSV file
+                        table.to_csv(file_path, index=False)  
                 
 def filter_matches(matches_list):
     return list(filter(lambda m: _filter_function(m), matches_list))
