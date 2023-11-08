@@ -9,7 +9,7 @@ def main(sleep_time = 2):
     api = OpenDotaAPI(verbose= True)
     data = DataPreprocessing()
     # recent_matches = filter_matches(api.get_recent_pro_matches())
-    df = pd.DataFrame()
+    df = pd.read_csv('large_amounts_of_data.csv')
     i = 0
     while True:
         recent_matches = filter_matches(api.get_recent_pro_matches())
@@ -19,8 +19,7 @@ def main(sleep_time = 2):
             if match_details is not None:
                 i = i + 1
                 table = data.get_all_current_match_tables(match_details)
-            if not (table.isna().any().any()) and not(table.shape[1] < 44) and not (recent_match in table[['MatchID']].values):
-                print(df.columns.tolist())
+            if not (table.isna().any().any()) and not(table.shape[1] < 44) and not (recent_match["match_id"] in df[['MatchID']].values):
                 file_path = 'large_amounts_of_data.csv'
                 if os.path.isfile(file_path):
                     # Append the DataFrame to the existing CSV file without overwriting
@@ -30,8 +29,8 @@ def main(sleep_time = 2):
                     # If the file doesn't exist, create a new CSV file
                     table.to_csv(file_path, index=False)  
                 
-            if i >= 10000:
-                break
+            # if i >= 10000:
+            #     break
 
 def filter_matches(matches_list):
     return list(filter(lambda m: _filter_function(m), matches_list))
@@ -41,6 +40,7 @@ def _filter_function(match):
         return False
     else:
         return True
+    return True
 
 if __name__ == "__main__":
     main()

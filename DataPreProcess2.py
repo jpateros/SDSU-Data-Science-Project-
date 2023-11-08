@@ -79,7 +79,8 @@ class DataPreprocessing():
                                             "ring_of_basilius" : 0,
                                             "wind_lace" : 0,
                                             "boots_of_elves" : 0,
-                                            "dust" : 0
+                                            "dust" : 0,
+                                            "bracer" : 0
                                         })
                 if hero_items_dict[key] is not None:
                     for index, item in enumerate(hero_items_dict[key]):
